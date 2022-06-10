@@ -2,6 +2,8 @@
 
 ### *A gui for your pdf needs*
 
+![icon](./icon.ico)
+
 **Only has support for merging pdfs right now**
 
 Made using PySimpleGui and pikepdf
