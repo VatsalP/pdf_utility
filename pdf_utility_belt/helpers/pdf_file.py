@@ -1,0 +1,2 @@
+class PDFFile:
+    pass

@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from loguru import logger
 
-from pdf_utility_belt.utility import are_pdf_files_valid, merge_pdf
+from pdf_utility_belt.helpers.utility import are_pdf_files_valid, merge_pdf
 
 
 def pdf_merge_window():

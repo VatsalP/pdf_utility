@@ -34,8 +34,11 @@ def merge_pdf(files_to_merge: List[Pdf], to_merge_file: str, password: str):
     if password:
         encryption = Encryption(owner=password, user=password)
     pdf = Pdf.new()
+    version = pdf.pdf_version
     for i, file in enumerate(files_to_merge):
         sg.one_line_progress_meter("Merging PDFs...", i + 1, len(files_to_merge), key="-PROGRESS_PDF-")
+        version = max(version, file.pdf_version)
         pdf.pages.extend(file.pages)
-    pdf.save(to_merge_file, encryption=encryption)
+    pdf.remove_unreferenced_resources()
+    pdf.save(to_merge_file, encryption=encryption, min_version=version)
     sg.one_line_progress_meter_cancel(key="-PROGRESS_PDF-")
