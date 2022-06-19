@@ -2,9 +2,9 @@ from pathlib import PurePath
 
 import PySimpleGUI as sg
 from loguru import logger
-from pikepdf import Pdf, PdfError
+from pikepdf import PdfError
 
-from pdf_utility_belt.helpers.utility import are_pdf_files_valid
+from pdf_utility_belt.helpers.utility import is_pdf_file_valid
 
 
 def reverse_pdf_order_window():
@@ -12,8 +12,9 @@ def reverse_pdf_order_window():
         [sg.InputText(key="-INPUT-"), sg.Button("Select")],
         [sg.Button("Reverse PDF", key="-REVERSE-")]
     ]
-    window = sg.Window("Reverse PDF", layout=layout, size=(430, 90))
+    window = sg.Window("Reverse PDF", layout=layout)
     pdf_file = ""
+    pdf_file_pike = None
     while True:
         event, values = window.read()
         match event:
@@ -22,24 +23,23 @@ def reverse_pdf_order_window():
             case "Select":
                 pdf_file = sg.popup_get_file("Input valid PDF file")
                 logger.debug(f"PDF filename supplied {pdf_file}")
-                if pdf_file and not are_pdf_files_valid([pdf_file]):
-                    logger.debug(f"PDF file not valid")
-                    sg.popup_error("Please input only valid PDF file")
-                    continue
+                if pdf_file:
+                    valid, pdf_file_pike = is_pdf_file_valid(pdf_file)
+                    if not valid:
+                        pdf_file_pike = None
+                        logger.debug(f"PDF file not valid")
+                        sg.popup_error("Please input only valid PDF file")
+                        continue
                 window["-INPUT-"].update(pdf_file)
             case "-REVERSE-":
-                if not pdf_file:
+                if not pdf_file_pike:
                     sg.popup_error("Please input a pdf file")
                     continue
                 try:
-                    pdf = Pdf.open(pdf_file)
-                    if pdf.is_encrypted:
-                        password = sg.popup_get_text("Password for the file")
-                        pdf = Pdf.open(pdf_file, password=password)
-                    pdf.pages.reverse()
+                    pdf_file_pike.pages.reverse()
                     path = PurePath(pdf_file)
                     output_file = path.parent.joinpath(path.stem + "-reversed" + path.suffix)
-                    pdf.save(str(output_file))
+                    pdf_file_pike.save(str(output_file))
                     logger.debug(f"{output_file} saved")
                     sg.popup(f"PDF file reversed. Saved at {output_file}")
                 except PdfError:

@@ -2,13 +2,13 @@
 
 ### *A gui for your pdf needs*
 
-![icon](./icon.ico)
-
-**Only has support for merging pdfs right now**
+**Currently, has support for merging and reversing pdfs**
 
 Made using PySimpleGui and pikepdf
 
-![pdf merge window](./Capture.PNG)
+![pdf main window](pdf_utility_belt/res/images/screenshots/main_window.png)
+
+![pdf merge window](pdf_utility_belt/res/images/screenshots/Capture.PNG)
 
 Requires: python >= 3.10 and poetry
 
